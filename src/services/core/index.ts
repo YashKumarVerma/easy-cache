@@ -4,7 +4,7 @@ import { mandatoryPropsExist } from '../util/mandatory'
 import RedisPlugin from '../redis'
 
 /** class with constructor and methods */
-export default class Core {
+class Core {
   redisPlugin!: RedisPlugin
 
   /** constructor to initialize the package with a configuration object */
@@ -27,4 +27,21 @@ export default class Core {
       debug: true,
     })
   }
+
+  /** private member function to transform a passed function to a string */
+  static getSignature(signature: any, propertyKey: string, args: any): string {
+    const head = `${signature.name}:${propertyKey}`.toLowerCase()
+    let tail = ':'
+
+    args.forEach((element: any) => {
+      if (typeof element === 'object') {
+        tail += Object.keys(element).reduce((r, k) => r.concat(element[k]), [])
+      } else {
+        tail += `${element}`
+      }
+    })
+    return `${head}:${tail}`
+  }
 }
+
+export default Core
