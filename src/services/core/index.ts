@@ -4,7 +4,7 @@ import { mandatoryPropsExist } from '../util/mandatory'
 import RedisPlugin from '../redis'
 
 /** class with constructor and methods */
-class Core {
+class EasyCache {
   redisPlugin!: RedisPlugin
 
   /** constructor to initialize the package with a configuration object */
@@ -42,6 +42,8 @@ class Core {
     })
     return `${head}:${tail}`
   }
+
+
 }
 
-export default Core
+export default EasyCache
