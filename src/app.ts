@@ -3,8 +3,9 @@ import Package from './index'
 const pkg = new Package({
   defaultTTL: 5,
   redisHost: 'localhost',
-  redisPassword: '12345',
-  redisPort: 3000,
+  redisPassword: '',
+  redisPort: 6379,
+  debug: true,
 })
 
 console.log(pkg)
