@@ -10,7 +10,7 @@
     "build": "tsc",
     "start:dev": "nodemon",
     "start:prod": "node ./dist/src/server.js",
-    "test": "NODE_ENV=test ./node_modules/mocha/bin/mocha  --exit ./test/**/*.js src/services/**/*.spec.ts"
+    "test": "NODE_ENV=test ./node_modules/mocha/bin/mocha -r ts-node/register ./test/**/*.ts src/services/**/*.spec.ts"
   },
   "dependencies": {
     "redis": "^3.1.2"
@@ -30,7 +30,7 @@
     "mocha": "^9.0.3",
     "nodemon": "^2.0.7",
     "prettier": "^2.2.1",
-    "ts-node": "^9.1.1",
+    "ts-node": "^10.1.0",
     "typescript": "^4.2.3"
   }
 }
