@@ -10,7 +10,7 @@
     "build": "tsc",
     "start:dev": "nodemon",
     "start:prod": "node ./dist/src/server.js",
-    "test": "NODE_ENV=test ./node_modules/mocha/bin/mocha -r ts-node/register --exit ./test/**/*.ts src/services/**/*.spec.ts"
+    "test": "NODE_ENV=test ./node_modules/mocha/bin/mocha -r ts-node/register --exit --timeout 5000 ./test/**/*.ts src/services/**/*.spec.ts"
   },
   "dependencies": {
     "redis": "^3.1.2"
