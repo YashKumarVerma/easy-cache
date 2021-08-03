@@ -60,11 +60,6 @@ describe('services/redis', () => {
    * Test Cases about the constructor
    */
   describe('constructor', () => {
-    let redisPluginInstance: RedisPlugin // instance of RedisPlugin
-
-    /** before each test, get a new client instance */
-    beforeEach(() => {})
-
     /** constructor should exist */
     it('should exist', () => {
       expect(RedisPlugin.constructor).to.not.be.undefined
@@ -77,16 +72,21 @@ describe('services/redis', () => {
 
     /** allow creating objects with new */
     it('should be callable with new', () => {
-      redisPluginInstance = new RedisPlugin(ENV)
+      const redisPluginInstance = new RedisPlugin(ENV)
       expect(redisPluginInstance).to.not.be.undefined
     })
 
     /** should create a new instance of RedisPlugin */
     it('should create a new instance of RedisPlugin', () => {
-      redisPluginInstance = new RedisPlugin(ENV)
+      const redisPluginInstance = new RedisPlugin(ENV)
       expect(redisPluginInstance).to.not.be.undefined
       expect(redisPluginInstance.client).to.not.be.undefined
       expect(redisPluginInstance.client).to.be.instanceOf(redis.RedisClient)
     })
   })
+
+  /**
+   * Test Cases about the config
+   */
+  describe('config', () => {})
 })
