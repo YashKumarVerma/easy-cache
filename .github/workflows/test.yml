@@ -1,0 +1,11 @@
+name: 'Tests'
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Run Tests on source code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - run: npm install
+      - run: npm run test
