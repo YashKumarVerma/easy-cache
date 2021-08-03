@@ -63,21 +63,21 @@ class RedisPlugin {
   }
 
   /** to perform a test read operation */
-  performTestRead() {
-    return new Promise((resolve, reject) => {
-      this.client.get('status', (err: any) => {
+  performTestRead(index: string = 'status') {
+    return new Promise((resolve) => {
+      this.client.get(index, (err: any, reply: string | null) => {
         /** if error returned */
         if (err != null) {
           if (this.config.debug) {
             console.error('[redis] : test read operation failed')
             console.error('[redis] : ', err)
           }
-          reject(false)
+          resolve(null)
         } else {
           if (this.config.debug) {
             console.log('[redis] : test read operation successful')
           }
-          resolve(true)
+          resolve(reply)
         }
       })
     })
