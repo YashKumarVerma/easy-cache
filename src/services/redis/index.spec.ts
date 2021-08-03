@@ -152,4 +152,35 @@ describe('services/redis', () => {
       })
     })
   })
+
+  /**
+   * Test cases for performTestWrite
+   */
+  describe('performTestWrite', () => {
+    /** performTestWrite should exist */
+    it('should exist', () => {
+      const client = new RedisPlugin(ENV)
+      expect(client.performTestWrite).to.not.be.undefined
+    })
+
+    /** should be a function */
+    it('should be a function', () => {
+      const client = new RedisPlugin(ENV)
+      expect(client.performTestWrite).to.be.a('function')
+    })
+
+    /** should return a boolean */
+    it('should return a pending promise', () => {
+      const client = new RedisPlugin(ENV)
+      expect(client.performTestWrite()).to.be.a('promise')
+    })
+
+    /** should return a true on success */
+    it('should resolve to true on success', () => {
+      const client = new RedisPlugin(ENV)
+      client.performTestWrite().then((returnObject: any) => {
+        expect(returnObject).to.equal(true)
+      })
+    })
+  })
 })
