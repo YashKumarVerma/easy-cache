@@ -144,12 +144,11 @@ describe('services/redis', () => {
     })
 
     /** should return a RedisClient instance */
-    it('should return a RedisClient instance', () => {
+    it('should return a RedisClient instance', async () => {
       const client = new RedisPlugin(ENV)
       expect(client.initializeClient()).to.not.be.undefined
-      client.initializeClient().then((returnObject: any) => {
-        expect(returnObject).to.be.instanceOf(redis.RedisClient)
-      })
+      const returnVal = await client.initializeClient()
+      expect(returnVal).to.be.instanceOf(redis.RedisClient)
     })
   })
 
@@ -169,18 +168,55 @@ describe('services/redis', () => {
       expect(client.performTestWrite).to.be.a('function')
     })
 
-    /** should return a boolean */
+    /** should return a pending promise */
     it('should return a pending promise', () => {
       const client = new RedisPlugin(ENV)
       expect(client.performTestWrite()).to.be.a('promise')
     })
 
-    /** should return a true on success */
-    it('should resolve to true on success', () => {
+    /** should resolve to true on success */
+    it('should resolve to true on success', async () => {
       const client = new RedisPlugin(ENV)
-      client.performTestWrite().then((returnObject: any) => {
-        expect(returnObject).to.equal(true)
-      })
+      const value = await client.performTestWrite()
+      expect(value).to.equal(true)
+    })
+  })
+
+  /**
+   * Test case for performTestRead
+   */
+  describe('performTestRead', () => {
+    /** performTestRead should exist */
+    it('should exist', () => {
+      const client = new RedisPlugin(ENV)
+      expect(client.performTestRead).to.not.be.undefined
+    })
+
+    /** should be a function */
+    it('should be a function', () => {
+      const client = new RedisPlugin(ENV)
+      expect(client.performTestRead).to.be.a('function')
+    })
+
+    /** should return a pending promise */
+    it('should return a pending promise', () => {
+      const client = new RedisPlugin(ENV)
+      expect(client.performTestRead()).to.be.a('promise')
+    })
+
+    /** should resolve saved string on success */
+    it('should resolve saved string on success', async () => {
+      const client = new RedisPlugin(ENV)
+      const value = await client.performTestRead()
+      expect(value).to.be.a('string')
+      expect(value).to.be.equal('server up')
+    })
+
+    /** should resolve saved string on success */
+    it('should resolve null string when unsaved index requested', async () => {
+      const client = new RedisPlugin(ENV)
+      const value = await client.performTestRead('some-key')
+      expect(value).to.be.equal(null)
     })
   })
 })
