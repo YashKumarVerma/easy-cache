@@ -37,7 +37,7 @@ class RedisPlugin {
         console.error(`[redis] :`, err)
       })
 
-      resolve(true)
+      resolve(this.client)
     })
   }
 
