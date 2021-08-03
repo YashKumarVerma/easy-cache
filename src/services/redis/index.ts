@@ -102,6 +102,16 @@ class RedisPlugin {
     })
   }
 
+  /** termite the redis connection */
+  terminate() {
+    return new Promise((resolve, reject) => {
+      this.client.quit((err: any) => {
+        if (err) reject(err)
+        resolve(true)
+      })
+    })
+  }
+
   /** to get a value from redis */
   getCache(index: string): Promise<string | null> {
     return new Promise((resolve) => {
