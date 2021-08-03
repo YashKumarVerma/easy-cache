@@ -88,5 +88,36 @@ describe('services/redis', () => {
   /**
    * Test Cases about the config
    */
-  describe('config', () => {})
+  describe('config', () => {
+    /** config should exist */
+    it('should exist', () => {
+      const client = new RedisPlugin(ENV)
+      expect(client).to.not.be.undefined
+    })
+
+    /** should be an object */
+    it('should be an object', () => {
+      const client = new RedisPlugin(ENV)
+      expect(client.config).to.be.an('object')
+    })
+
+    /** compare config attributes */
+    it('should have the same attributes as the ENV', () => {
+      const client = new RedisPlugin(ENV)
+      expect(client.config).to.not.be.undefined
+      expect(client.config).to.have.property('port')
+      expect(client.config).to.have.property('host')
+      expect(client.config).to.have.property('password')
+      expect(client.config).to.have.property('debug')
+    })
+
+    /** attributes should have same values as ENV */
+    it('should have the same values as the ENV', () => {
+      const client = new RedisPlugin(ENV)
+      expect(client.config.port).to.equal(ENV.port)
+      expect(client.config.host).to.equal(ENV.host)
+      expect(client.config.password).to.equal(ENV.password)
+      expect(client.config.debug).to.equal(ENV.debug)
+    })
+  })
 })
