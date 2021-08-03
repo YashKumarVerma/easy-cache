@@ -16,12 +16,13 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable import/no-extraneous-dependencies */
 import { expect } from 'chai'
-import { describe, it, beforeEach } from 'mocha'
+import { describe, it } from 'mocha'
 
-/** import target for testing */
+/** import local codebase for testing */
 import redis from 'redis'
 import RedisPlugin from './index'
 import { RedisConfigurationObject } from './interface'
+import { sleep } from '../util/time'
 
 /**
  * @constants
@@ -217,6 +218,168 @@ describe('services/redis', () => {
       const client = new RedisPlugin(ENV)
       const value = await client.performTestRead('some-key')
       expect(value).to.be.equal(null)
+    })
+  })
+
+  /**
+   * Test cases for setCache
+   */
+  describe('setCache', () => {
+    /** setCache should exist */
+    it('should exist', () => {
+      const client = new RedisPlugin(ENV)
+      expect(client.setCache).to.not.be.undefined
+    })
+
+    /** should be a function */
+    it('should be a function', () => {
+      const client = new RedisPlugin(ENV)
+      expect(client.setCache).to.be.a('function')
+    })
+
+    /** should return a pending promise */
+    it('should return a pending promise', () => {
+      const client = new RedisPlugin(ENV)
+      expect(client.setCache('index', 'data', 1)).to.be.a('promise')
+    })
+
+    /** should resolve to true on success */
+    it('should resolve to true on successful insert', async () => {
+      const client = new RedisPlugin(ENV)
+      const value = await client.setCache('index', 'data', 1)
+      expect(value).to.equal(true)
+    })
+
+    /** should resolve to null on failure */
+    it('should resolve to null on failure', async () => {
+      const client = new RedisPlugin(ENV)
+      const value = await client.getCache('some-randmo-index')
+      expect(value).to.equal(null)
+    })
+
+    /**
+     * Test cases to validate TTL configurations
+     */
+    describe('TTL / expiry', () => {
+      /** should throw an error when TTL smaller than 1 */
+      it('should throw an error when TTL smaller than 1', async () => {
+        const client = new RedisPlugin(ENV)
+        try {
+          await client.setCache('some-index', 'data', 0)
+        } catch (err) {
+          expect(err).to.be.an('error')
+        }
+      })
+
+      /** should not throw an error when TTL greater than or equal to 1 */
+      it('should not throw an error when TTL greater than or equal to 1', async () => {
+        const client = new RedisPlugin(ENV)
+        try {
+          await client.setCache('some-index', 'data', 1)
+        } catch (err) {
+          expect(err).to.be.undefined
+        }
+      })
+
+      /** should return null if data read after TTL */
+      it('should return null if data read after TTL', async () => {
+        /** set a cache with a TTL of 1 */
+        const client = new RedisPlugin(ENV)
+        const value = await client.setCache('timeCheck', { data: 100 }, 1)
+        expect(value).to.equal(true)
+
+        /** read the value immediately after */
+        const immediateCheck = await client.getCache('timeCheck')
+        expect(immediateCheck).to.be.equal(JSON.stringify({ data: 100 }))
+
+        /** wait for TTL to expire */
+        await sleep(1.1 * 1000)
+
+        /** read the value after TTL */
+        const expiredCheck = await client.getCache('timeCheck')
+        expect(expiredCheck).to.be.equal(null)
+      })
+    })
+
+    /**
+     * Test cases to validate data i/o from Redis abstraction
+     */
+    describe('data i/o from Redis abstraction', () => {
+      /** should save a string and return JSON.stringify on read */
+      it('should save a string and return JSON.stringify on read', async () => {
+        const client = new RedisPlugin(ENV)
+        const value = await client.setCache('some-index', 'data', 1)
+        expect(value).to.equal(true)
+
+        const readValue = await client.getCache('some-index')
+        expect(readValue).not.to.be.null
+        expect(readValue).to.be.a('string')
+        expect(readValue).to.equal(JSON.stringify('data'))
+      })
+
+      /** should save a number and return JSON.stringify on read */
+      it('should save a number and return JSON.stringify on read', async () => {
+        const client = new RedisPlugin(ENV)
+        const value = await client.setCache('some-index', 100, 1)
+        expect(value).to.equal(true)
+
+        const readValue = await client.getCache('some-index')
+        expect(readValue).not.to.be.null
+        expect(readValue).to.be.a('string')
+        expect(readValue).to.equal(JSON.stringify(100))
+      })
+
+      /** should save a boolean and return JSON.stringify on read */
+      it('should save a boolean and return JSON.stringify on read', async () => {
+        const client = new RedisPlugin(ENV)
+        const value = await client.setCache('some-index', true, 1)
+        expect(value).to.equal(true)
+
+        const readValue = await client.getCache('some-index')
+        expect(readValue).not.to.be.null
+        expect(readValue).to.be.a('string')
+        expect(readValue).to.equal(JSON.stringify(true))
+      })
+
+      /** should save an object and return JSON.stringify on read */
+      it('should save an object and return JSON.stringify on read', async () => {
+        const client = new RedisPlugin(ENV)
+        const value = await client.setCache('some-index', { data: 100 }, 1)
+        expect(value).to.equal(true)
+
+        const readValue = await client.getCache('some-index')
+        expect(readValue).not.to.be.null
+        expect(readValue).to.be.a('string')
+        expect(readValue).to.equal(JSON.stringify({ data: 100 }))
+      })
+
+      /** should save an array and return JSON.stringify on read */
+      it('should save an array and return JSON.stringify on read', async () => {
+        const client = new RedisPlugin(ENV)
+        const value = await client.setCache('some-index', [100], 1)
+        expect(value).to.equal(true)
+
+        const readValue = await client.getCache('some-index')
+        expect(readValue).not.to.be.null
+        expect(readValue).to.be.a('string')
+        expect(readValue).to.equal(JSON.stringify([100]))
+      })
+
+      /** should save a nested object and return JSON.stringify on read */
+      it('should save a nested object and return JSON.stringify on read', async () => {
+        const client = new RedisPlugin(ENV)
+        const value = await client.setCache(
+          'some-index',
+          { data: { nested: 100 } },
+          1,
+        )
+        expect(value).to.equal(true)
+
+        const readValue = await client.getCache('some-index')
+        expect(readValue).not.to.be.null
+        expect(readValue).to.be.a('string')
+        expect(readValue).to.equal(JSON.stringify({ data: { nested: 100 } }))
+      })
     })
   })
 })

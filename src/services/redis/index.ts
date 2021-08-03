@@ -87,12 +87,15 @@ class RedisPlugin {
   setCache(index: string, data: any, TTL: number) {
     const stringData = JSON.stringify(data)
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       this.client.set(index, stringData, 'EX', TTL, (err: any) => {
         if (err !== null) {
-          console.error(`[redis] : err saving, index ${index}`)
-          console.error(`[redis] : err saving, data `, data)
-          console.error(`[redis] : `, err)
+          if (this.config.debug) {
+            console.error(`[redis] : err saving, index ${index}`)
+            console.error(`[redis] : err saving, data `, data)
+            console.error(`[redis] : `, err)
+          }
+          reject(err)
         } else if (this.config.debug) {
           console.log(`[redis] : saved, index ${index}`)
           console.log(`[redis] : saved, data `, data)
@@ -118,8 +121,10 @@ class RedisPlugin {
       this.client.get(index, (err, data: string | null) => {
         /** either there can be error in fetching from redis */
         if (err !== null) {
-          console.error(`[redis] : err reading, index ${index}`)
-          console.error(`[redis] : ${index}`)
+          if (this.config.debug) {
+            console.error(`[redis] : err reading, index ${index}`)
+            console.error(`[redis] : ${index}`)
+          }
           resolve(null)
 
           /** or the data would not be found, aka cache miss */
