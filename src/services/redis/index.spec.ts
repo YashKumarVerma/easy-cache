@@ -224,7 +224,7 @@ describe('services/redis', () => {
   /**
    * Test cases for setCache
    */
-  describe('setCache', () => {
+  describe('setCache , getCache', () => {
     /** setCache should exist */
     it('should exist', () => {
       const client = new RedisPlugin(ENV)
