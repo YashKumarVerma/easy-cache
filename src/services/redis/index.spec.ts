@@ -120,4 +120,36 @@ describe('services/redis', () => {
       expect(client.config.debug).to.equal(ENV.debug)
     })
   })
+
+  /**
+   * Test cases for initializeClient
+   */
+  describe('initializeClient', () => {
+    /** initializeClient should exist */
+    it('should exist', () => {
+      const client = new RedisPlugin(ENV)
+      expect(client.initializeClient).to.not.be.undefined
+    })
+
+    /** should be a function */
+    it('should be a function', () => {
+      const client = new RedisPlugin(ENV)
+      expect(client.initializeClient).to.be.a('function')
+    })
+
+    /** should return a promise */
+    it('should return a promise', () => {
+      const client = new RedisPlugin(ENV)
+      expect(client.initializeClient()).to.be.a('promise')
+    })
+
+    /** should return a RedisClient instance */
+    it('should return a RedisClient instance', () => {
+      const client = new RedisPlugin(ENV)
+      expect(client.initializeClient()).to.not.be.undefined
+      client.initializeClient().then((returnObject: any) => {
+        expect(returnObject).to.be.instanceOf(redis.RedisClient)
+      })
+    })
+  })
 })
