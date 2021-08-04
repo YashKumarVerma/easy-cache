@@ -7,4 +7,11 @@
  */
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-export { sleep }
+/** To get current timestamp in seconds */
+const currentTimeStampInSeconds = () => Date.now() / 1000
+
+/** to get number of seconds from a timestamp */
+const secondsFromTimestamp = (timestamp: number) =>
+  currentTimeStampInSeconds() - timestamp
+
+export { sleep, currentTimeStampInSeconds, secondsFromTimestamp }
