@@ -127,7 +127,9 @@ class EasyCache {
 
           /** update entry in cache */
           if (debug) {
-            console.log(`Attempting to set cache for ${functionSignature}`)
+            console.log(
+              `[EasyCache] Attempting to set cache for ${functionSignature}`,
+            )
           }
           redisPlugin.setCache(functionSignature, result, expireAfter)
           return result
