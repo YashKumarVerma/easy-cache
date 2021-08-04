@@ -4,7 +4,7 @@ import { expect } from 'chai'
 import { describe, it } from 'mocha'
 
 /** import code being tested */
-import { sleep } from './time'
+import { currentTimeStampInSeconds, secondsFromTimestamp, sleep } from './time'
 
 describe('services/util/time', () => {
   /** method to halt execution for a given time duration */
@@ -21,10 +21,11 @@ describe('services/util/time', () => {
 
     /** should sleep for a given duration */
     it('should sleep for a given duration', async () => {
-      const currentTimeStamp = new Date().getTime() % 1000
-      await sleep(100)
-      const elapsedTime = (new Date().getTime() - currentTimeStamp) % 1000
-      expect(elapsedTime).to.be.at.least(100)
+      const currentTimeStamp = currentTimeStampInSeconds()
+      await sleep(1500)
+      const elapsedTime = secondsFromTimestamp(currentTimeStamp)
+      expect(elapsedTime).to.be.at.least(1)
+      expect(elapsedTime).to.be.at.most(2)
     })
   })
 })
