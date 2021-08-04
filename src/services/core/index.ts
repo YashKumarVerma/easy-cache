@@ -34,13 +34,20 @@ class EasyCache {
       host: config.redisHost,
       port: config.redisPort,
       password: config.redisPassword,
-      debug: true,
+      debug: this.config.debug || false,
     })
   }
 
   /** private member function to transform a passed function to a string */
-  static getSignature(signature: any, propertyKey: string, args: any): string {
-    const head = `${signature.name}:${propertyKey}`.toLowerCase()
+  static getSignature(
+    signature: any,
+    propertyKey: string,
+    args: Array<any>,
+  ): string {
+    if (signature === undefined || signature.name === undefined) {
+      signature = { name: 'orphanMethod' }
+    }
+    const head = `${signature.name}:${propertyKey}`.toString()
     let tail = ':'
 
     args.forEach((element: any) => {
