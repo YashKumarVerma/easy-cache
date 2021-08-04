@@ -8,11 +8,7 @@ import { describe, it } from 'mocha'
 import EasyCache from './index'
 import { ConstructorConfig } from './interface'
 import { InsufficientDataException } from '../error/insufficientData'
-import {
-  currentTimeStampInSeconds,
-  secondsFromTimestamp,
-  sleep,
-} from '../util/time'
+import { currentTimeStampInSeconds, secondsFromTimestamp } from '../util/time'
 
 /**
  * @constants
