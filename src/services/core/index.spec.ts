@@ -347,14 +347,129 @@ describe('core/EasyCache', () => {
         {
           cached: false,
           start: Math.floor(initialTimeStamp),
-          time: `${Math.floor(timeTakenInSeconds)} seconds`,
           timesRun: results.length,
+          time: `${Math.floor(timeTakenInSeconds)} seconds`,
         },
         {
           cached: true,
           start: Math.floor(initialTimeStampWhenCached),
-          time: `${Math.floor(timeTakenInSecondsWhenCached)} seconds`,
           timesRun: resultsWhenCached.length,
+          time: `${Math.floor(timeTakenInSecondsWhenCached)} seconds`,
+        },
+      ])
+    })
+  })
+
+  /**
+   * Test cases for provider
+   */
+  describe('provider', () => {
+    /** should be defined */
+    it('should be defined', () => {
+      const EasyCacheInstance = new EasyCache(ENV)
+      expect(EasyCacheInstance.provider).not.to.be.undefined
+    })
+
+    /** should be a function */
+    it('should be a function', () => {
+      const EasyCacheInstance = new EasyCache(ENV)
+      expect(EasyCacheInstance.provider).to.be.a('function')
+    })
+
+    /** should return a function */
+    it('should return a function', () => {
+      function fx() {
+        return true
+      }
+
+      const EasyCacheInstance = new EasyCache(ENV)
+      expect(EasyCacheInstance.provider({}, fx)).to.be.a('function')
+    })
+
+    /** should return a function with expected output */
+    it('should cache the output of the host function [time based check]', async () => {
+      /** declare an instance of EasyCache */
+      const EasyCacheInstance = new EasyCache(ENV)
+
+      class DummyClass {
+        /** this function resolves after 1 second to run */
+        static async someBulkyOperation(): Promise<string> {
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              resolve('resultOfSomeBulkyOperation')
+            }, 1000)
+          })
+        }
+
+        static async test(enableCache = false): Promise<Array<string>> {
+          const results: Array<string> = []
+
+          /** get a cached version of someBulkyOperation */
+          const cachedFunction = EasyCacheInstance.provider(
+            {
+              expireAfter: 5,
+            },
+            DummyClass.someBulkyOperation,
+          )
+
+          for (let i = 0; i < 5; i += 1) {
+            if (enableCache) {
+              const result = await cachedFunction()
+              results.push(result)
+            } else {
+              const result = await DummyClass.someBulkyOperation()
+              results.push(result)
+            }
+          }
+
+          return results
+        }
+      }
+
+      /**
+       * now run the function a bunch of times, say 10 times
+       * Only the output of the first run should take 1000ms to run.
+       * Subsequent runs should be way faster than 1000ms.
+       */
+
+      /** run the function 10 times, without caching it should take ~5 seconds */
+      const initialTimeStamp = currentTimeStampInSeconds()
+      const results = await DummyClass.test()
+      const timeTakenInSeconds = secondsFromTimestamp(initialTimeStamp)
+
+      /**
+       * Since the loop runs 5 times, the non cached function should take about
+       * 1000 * 5 = 5000ms to run.
+       *
+       * 500ms are taken for timestamp irregularity.
+       */
+      expect(timeTakenInSeconds).to.be.above(4.5)
+      expect(timeTakenInSeconds).to.be.below(5.5)
+      expect(results.length).to.be.equal(5)
+
+      /** Now run the function 5 times with caching enabled, it should take ~1 second */
+      const initialTimeStampWhenCached = currentTimeStampInSeconds()
+      const resultsWhenCached = await DummyClass.test(true)
+      const timeTakenInSecondsWhenCached = secondsFromTimestamp(
+        initialTimeStampWhenCached,
+      )
+
+      expect(resultsWhenCached.length).to.be.equal(5)
+      expect(timeTakenInSecondsWhenCached).to.be.above(0.5)
+      expect(timeTakenInSecondsWhenCached).to.be.below(1.5)
+
+      console.table([
+        {
+          cached: false,
+          start: Math.floor(initialTimeStamp),
+          timesRun: results.length,
+          time: `${Math.floor(timeTakenInSeconds)} seconds`,
+        },
+        {
+          cached: true,
+          start: Math.floor(initialTimeStampWhenCached),
+          timesRun: resultsWhenCached.length,
+          time: `${Math.floor(timeTakenInSecondsWhenCached)} seconds`,
         },
       ])
     })
