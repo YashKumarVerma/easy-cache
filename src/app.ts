@@ -10,7 +10,6 @@ async function worker() {
     disable: false,
   })
 
-  @EasyCacheInstance.Cache({debug:true})
   function something(age: number) {
     console.log(`[something] : fx started`)
     return new Promise((resolve) => {
