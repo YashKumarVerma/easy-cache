@@ -142,6 +142,68 @@ class EasyCache {
       return descriptor
     }
   }
+
+  provider(config: CacheDecoratorConfig, passedFunction: Function) {
+    /**
+     * Higher Order Function
+     *
+     * This is a higher order function that is used to pass the configuration
+     * and the target function to the EasyCache.provider method. It returns
+     * a new function that has a cache layer on top of the original function.
+     *
+     * The cache layer is based on the configuration passed into the method.
+     *
+     * This method is supposed to be used in JavaScript projects, as decorators
+     * are not supported in JavaScript. Typescript users can use the decorator.
+     */
+
+    const {
+      debug: classConfigDefault,
+      defaultTTL: classConfigTTL,
+      disable: classConfigDisable,
+    } = this.config
+
+    /** summon the redis instance from the redis service */
+    const { redisPlugin } = this
+
+    return async (...args: Array<any>) => {
+      const {
+        debug = classConfigDefault,
+        disable = classConfigDisable,
+        expireAfter = classConfigTTL,
+      } = config
+
+      const originalFunction = passedFunction(...args)
+      if (disable) {
+        return originalFunction
+      }
+
+      const functionSignature = EasyCache.getSignature(
+        originalFunction,
+        'providerGenerated',
+        args,
+      )
+
+      const cacheLookup = await redisPlugin.getCache(functionSignature)
+
+      /** run original method if cache miss and return data */
+      if (cacheLookup === null) {
+        const result = await originalFunction.apply(this, args)
+
+        /** update entry in cache */
+        if (debug) {
+          console.log(
+            `[EasyCache] Attempting to set cache for ${functionSignature}`,
+          )
+        }
+        redisPlugin.setCache(functionSignature, result, expireAfter)
+        return result
+      }
+
+      /** else return cache result */
+      return JSON.parse(cacheLookup)
+    }
+  }
 }
 
 export default EasyCache
