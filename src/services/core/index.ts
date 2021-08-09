@@ -173,13 +173,12 @@ class EasyCache {
         expireAfter = classConfigTTL,
       } = config
 
-      const originalFunction = passedFunction(...args)
       if (disable) {
-        return originalFunction
+        return passedFunction
       }
 
       const functionSignature = EasyCache.getSignature(
-        originalFunction,
+        passedFunction,
         'providerGenerated',
         args,
       )
@@ -188,7 +187,7 @@ class EasyCache {
 
       /** run original method if cache miss and return data */
       if (cacheLookup === null) {
-        const result = await originalFunction.apply(this, args)
+        const result = await passedFunction(args)
 
         /** update entry in cache */
         if (debug) {
