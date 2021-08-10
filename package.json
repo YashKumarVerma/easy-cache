@@ -1,7 +1,7 @@
 {
   "name": "@easy-cache/core",
   "version": "1.0.0",
-  "main": "dist/lib.js",
+  "main": "dist/index.js",
   "repository": "https://github.com/YashKumarVerma/easy-cache",
   "author": "Yash Kumar Verma <yk.verma2000@gmail.com>",
   "license": "MIT",
