@@ -1,4 +1,4 @@
-![EasyCache](assets/banner.png)
+![EasyCache](https://github.com/YashKumarVerma/easy-cache/blob/master/assets/banner.png?raw=true)
 
 [![Ensure Package Builds](https://github.com/YashKumarVerma/easy-cache/actions/workflows/build.yml/badge.svg)](https://github.com/YashKumarVerma/easy-cache/actions/workflows/build.yml)
 [![Tests](https://github.com/YashKumarVerma/easy-cache/actions/workflows/test.yml/badge.svg)](https://github.com/YashKumarVerma/easy-cache/actions/workflows/test.yml)
@@ -28,14 +28,14 @@ The package can be directly used in any nodejs (TypeScript / JavaScript) based b
 **Step 1**: Install the package
 
 ```
-npm install --save @easy-cache/core
+npm install @easy-cache/core
 
 # or
 
 yarn add @easy-cache/core
 ```
 
-> Note: In v1.0, the default cache engine i.e. `redis` is used, and therefore the `redis` package is also installed by default.
+> Note: In v1.0, the default cache engine i.e. `redis` is used, and therefore the `redis` package is also installed by default. From v2.0 onwards, there would be 0 dependencies in the core package.
 
 **Step 2**: Initialize the cache system
 

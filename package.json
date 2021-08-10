@@ -5,6 +5,13 @@
   "repository": "https://github.com/YashKumarVerma/easy-cache",
   "author": "Yash Kumar Verma <yk.verma2000@gmail.com>",
   "license": "MIT",
+  "keywords": [
+    "cache",
+    "minimal",
+    "redis",
+    "plugins",
+    "easy-cache"
+  ],
   "scripts": {
     "lint": "eslint ./src/**/*.ts --fix",
     "build": "tsc",
