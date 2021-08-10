@@ -1,11 +1,11 @@
+> A modern NodeJS package to cache any function with just a **single line of code** - @easy-cache
+
 ![EasyCache](https://github.com/YashKumarVerma/easy-cache/blob/master/assets/banner.png?raw=true)
 
 [![Ensure Package Builds](https://github.com/YashKumarVerma/easy-cache/actions/workflows/build.yml/badge.svg)](https://github.com/YashKumarVerma/easy-cache/actions/workflows/build.yml)
 [![Tests](https://github.com/YashKumarVerma/easy-cache/actions/workflows/test.yml/badge.svg)](https://github.com/YashKumarVerma/easy-cache/actions/workflows/test.yml)
 
 # EasyCache
-
-> A modern NodeJS package to cache any function with just a **single line of code** - @easy-cache
 
 ## 🤔 What is EasyCache v1.0?
 
